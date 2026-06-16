@@ -1,1 +1,35 @@
-1. Generative AI
+1. Generative AI = It is a type of artificial intelligence specially designed to generate new content such as text,images,videos,code etc. by learning from existing data.
+Basically in Generative AI, the models trained on large amount of dataset including text,images,videos,etc. using deep learning neural network.
+Durig training process the model learns millions or billions of parameters that helps them predicting or generating new content that sometimes feels like human generated content.
+one liner = AI systems that can generate new content.
+
+Note = 1. generative AI is not a model, it is one of the category like ai , ml ,deep learning etc.
+2. In generative ai we have various architectures or we can say that type of generative AI which we are usign to create gen ai models.
+    1. GAN and VAN = Generative Adversarial Networks and Variational Autoencoders respectively.VAEs and GANs were among the first deep learning architectures for generative tasks invented in 2014 and 2013 respectively.
+        GAN = It is a type of neural network architecture used for generative tasks. They consist of two networks—the generator and the discriminator—that compete in a game-like setting. The generator creates fake data and the discriminator evaluates whether the data is real or fake, improving both networks over time.widely used for GANs are widely used for image generation, video synthesis and data augmentation.
+        VAN = It is a type of autoencoder that encodes input data into a probabilistic latent space instead of a fixed point, allowing it to generate new data by sampling from this latent distribution. VAEs combine neural networks with probabilistic modeling, making them suitable for generative tasks like creating images, text or other complex data.
+    
+    2. Diffusion Modals = are generative models that learn to create data by reversing a gradual noising process. During training, they learn how data becomes corrupted by noise step by step. During generation, they start with random noise and progressively remove it, reconstructing structured data that resembles the original dataset. These models are especially effective for producing high-quality, detailed and diverse outputs.
+
+    Generating Data with Diffusion Models:
+
+        1. Begin with a random pattern of noise.
+        2. Gradually refine the noise step by step, removing randomness and adding structure.
+        3. At each step, the model predicts a slightly clearer version based on patterns it learned during training.
+        4. After repeating this process multiple times, the noise is transformed into realistic data that resembles the training examples.
+    
+    3. Encoder-Decoder model is a common architecture used in sequence-to-sequence tasks such as machine translation, text summarization and image captioning. It consists of two main parts — the Encoder which processes the input and the Decoder which generates the output.
+        1. Encoder:
+            Takes the input data (like a sentence) and converts it into a fixed-length vector or latent representation.
+            This vector captures the meaning and context of the entire input sequence.
+            In models like Transformers, the encoder uses self-attention to understand relationships between words.
+        2. Decoder:
+            Takes the encoder’s output (context vector) and generates the output sequence step by step.
+            In text generation, it predicts the next word based on previous outputs and the encoder’s context.
+            Uses cross-attention to focus on relevant parts of the input while producing each word.
+            
+    4. Transformer Architecture = 
+
+    
+
+
