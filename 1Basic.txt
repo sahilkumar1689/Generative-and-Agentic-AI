@@ -4,7 +4,43 @@ Durig training process the model learns millions or billions of parameters that 
 one liner = AI systems that can generate new content.
 
 Note = 1. generative AI is not a model, it is one of the category like ai , ml ,deep learning etc.
-2. In generative ai we have various architectures or we can say that type of generative AI which we are usign to create gen ai models.
+2. A mental model to categorize all the AI branches:
+
+Artificial Intelligence
+        ↓
+Machine Learning
+        ↓
+Deep Learning
+        |
+        ├── ANN Family = Artificial Neural Networks.Used for tabular data.Failed on sequence data.
+        │
+        ├── CNN Family = Convolutional Neural Networks.Used for images data.Failed on sequence data.
+        │
+        ├── RNN Family = Recurret Neural Networks.Used for sequence to sequence data.It has two problem = sequential mechanism which process token by token and memory issue.Example = let say we have a sentence of 20-25 words.Beause they process One word at a time.The hidden state acts as memory.As sequences become longer.Important information from earlier words gradually becomes diluted.This is related to the vanishing gradient problem.
+        │      ↓
+        │    LSTM = Long short term memory.Used to oversome RNN Using the Long and short term memory instead of one hidden state like in RNN.Still failed for 30+ words.
+        │      ↓
+        │    GRU = Gated Recurret Unit
+        │      ↓
+        │  Attention = Used to overcome the LSTM problem of maintaing the LSTM state for long sequence sentence.It Using to dynamically calculate the relationships of one token with the other.Initally implemented using LSTM which overcomes the memory issue but because it works sequentially , make them slow.
+        │      ↓
+        ├── Transformer = Nothing but a encoder decoder architecture with self attention mechanism.Completely remove the RNN or LSTM to process parallel token process.
+        │
+        ├── GAN Family
+        │
+        ├── VAE Family
+        │
+        └── Diffusion Family
+
+Generative AI
+│
+├── GAN → Generate images
+├── VAE → Generate images/data
+├── Diffusion → Generate images/videos
+└── Transformer → Generate text
+
+
+3. In generative ai we have various architectures or we can say that type of generative AI which we are usign to create gen ai models.
     1. GAN and VAN = Generative Adversarial Networks and Variational Autoencoders respectively.VAEs and GANs were among the first deep learning architectures for generative tasks invented in 2014 and 2013 respectively.
         GAN = It is a type of neural network architecture used for generative tasks. They consist of two networks—the generator and the discriminator—that compete in a game-like setting. The generator creates fake data and the discriminator evaluates whether the data is real or fake, improving both networks over time.widely used for GANs are widely used for image generation, video synthesis and data augmentation.
         VAN = It is a type of autoencoder that encodes input data into a probabilistic latent space instead of a fixed point, allowing it to generate new data by sampling from this latent distribution. VAEs combine neural networks with probabilistic modeling, making them suitable for generative tasks like creating images, text or other complex data.
@@ -18,7 +54,7 @@ Note = 1. generative AI is not a model, it is one of the category like ai , ml ,
         3. At each step, the model predicts a slightly clearer version based on patterns it learned during training.
         4. After repeating this process multiple times, the noise is transformed into realistic data that resembles the training examples.
     
-    3. Encoder-Decoder model is a common architecture used in sequence-to-sequence tasks such as machine translation, text summarization and image captioning. It consists of two main parts — the Encoder which processes the input and the Decoder which generates the output.
+    3. Encoder-Decoder model is a common architecture used in sequence-to-sequence tasks such as machine translation, text summarization and image captioning.It is a building block for most of the generative ai models.Like the RNN , Attention mechanism and Transformer are based on encoder-decorder architecture. It consists of two main parts — the Encoder which processes the input and the Decoder which generates the output.
         1. Encoder:
             Takes the input data (like a sentence) and converts it into a fixed-length vector or latent representation.
             This vector captures the meaning and context of the entire input sequence.
@@ -27,9 +63,82 @@ Note = 1. generative AI is not a model, it is one of the category like ai , ml ,
             Takes the encoder’s output (context vector) and generates the output sequence step by step.
             In text generation, it predicts the next word based on previous outputs and the encoder’s context.
             Uses cross-attention to focus on relevant parts of the input while producing each word.
-            
-    4. Transformer Architecture = 
-
     
+    problem with RNN or LSTM = RNNs were designed to process sequential data by reading one token at a time and passing information through a hidden state. However, they struggled with long-range dependencies because information from earlier tokens could gradually fade as the sequence became longer.
+
+    LSTMs and GRUs were introduced to solve this problem by adding gating mechanisms that helped preserve important information for longer periods. While they improved memory, they still processed tokens sequentially, making training slow and limiting parallelization.
+
+    To further improve sequence modeling, Attention mechanisms were introduced. Attention allowed the model to directly focus on relevant words in the input sequence instead of relying only on the compressed hidden state.
+
+    However, Attention was initially added on top of LSTMs, so the sequential processing bottleneck still existed.
+
+    The Transformer architecture removed RNNs and LSTMs entirely and relied solely on self-attention. This allowed all tokens to be processed in parallel, significantly speeding up training while also capturing long-range dependencies more effectively.
+
+    This innovation led to modern LLMs such as GPT, Gemini, Claude, and Llama.
+
+    4. Transformer Architecture = Transformers are a type of deep learning model that utilizes self-attention mechanisms to process and generate sequences of data efficiently. 
+    They capture long-range dependencies and contextual relationships making them highly effective for tasks like language modeling, machine translation and text generation. 
+    Transformer model is built on encoder-decoder architecture where both the encoder and decoder are composed of a series of layers that utilize self-attention mechanisms and feed-forward neural networks.
+    The encoder and decoder work together to transform the input into the desired output such as translating a sentence from one language to another or generating a response to a query.
+    This architecture enables the model to process input data in parallel making it highly efficient and effective for tasks involving sequential data.
+
+    1. Encoder Block = The primary function of the encoder is to create a high-dimensional content array of the input sequence that that used by the decoder to generate the output.
+
+    If we take about the encoder process flow:
+    Before entering into the encoder block our first step in processing input data which involves converting raw text into a format that the transformer model can understand.The input sequence is tokenized and converted into embeddings with positional encodings added.
+
+    Tokenization = Tokenization is the process of breaking text into smaller units called tokens, which helps machines process and analyze language effectively.Tokens can be words, characters, or sub-words.
+     Types of Tokenization = 1. Word Tokenization = Word tokenization is the most commonly used method where text is divided into individual words.
+        2. characters Tokenization = Spit the sentence into individual characters.
+        3. Sub-word Tokenization = This strikes a balance between word and character tokenization by breaking down text into units that are larger than a single character but smaller than a full word.Generally used to handle the handle out-of-vocabulary problem.
+        4. Sentence Tokenization = Sentence tokenization is also a common technique used to make a division of paragraphs or large set of sentences into separated sentences as tokens.
+        5. N-gram Tokenization = N-gram tokenization splits words into fixed-sized chunks (size = n) of data.
+     Type of approaches = whitespace,statatical,transformer based,Rule based, byte pair.
+
+    Embeddings = After tokenization the next stpe is embedding where each token is converted into a fixed-size vector using an embedding layer. This layer maps each token to a dense vector representation that captures its semantic meaning.Basically there is one problem in tokenization that the semantic meaning is loss so solve this we use embedding.
+
+    Position Encodings = It is a technique used in transformers to provide information about the position of tokens in a sequence. Since transformers process all tokens in parallel and do not inherently understand order, positional encoding allows the model to capture sequence structure and relative positions of elements.
+
+
+    Encode block consists multiple layers of encoder where each encoder consists of two components:
+        1. Multi head self attention = Multi-head attention extends self-attention by splitting the input into multiple heads, enabling the model to capture diverse relationships and patterns.
+        This allows the model to capture a richer set of relationships within the input sequence. The outputs of these heads are then concatenated and linearly transformed to produce the final output.
+
+        Attention = The attention mechanism allows a model to focus on relevant parts of the input sequence when producing an output. Instead of treating all elements equally, it assigns different weights to different parts, so the model “pays more attention” to the important parts.
+
+            1. Self Attention Mechanism = Self-attention helps a model understand how words in a sentence are related to each other. It allows the model to look at all words at the same time and decide which ones are important for understanding the meaning of each word. Because of this, self-attention captures context more effectively.
+            Attention helps models focus on the most important words in a sentence, similar to how humans understand language.
+
+            It represent mathematically using three vector Q,K,V.
+            Where, Q = It represents the current word's relationship with others.
+            K = It represents the words that are being compared against.
+            V = It contains the actual word representations.
+
+            2. Cross Attention Mechanism = It is used by the decorder it allows the decoder to access and use relevant information from the encoder.Elements in one sequence attend to elements in a different sequence.Query comes from one sequence, Key and Value come from another sequence.
+
+
+        2. Position Wise Feed Forward Network = The Feed-Forward Networks consist of two linear transformations with a ReLU activation. It is applied independently to each position in the sequence.This transformation helps refine the encoded representation at each position.
+
+        3. Add & Norm = Residual Connections and Layer Normalization.
+        Each sub-layer in the transformer (such as self-attention and feed-forward networks) is followed by an Add & Norm step.
+
+        Residual Connection (Add): The input of a layer is added to its output. This helps in preserving information and prevents vanishing gradients in deep networks.
+        Layer Normalization (Norm): The combined output is normalized to stabilize training and improve convergence.
+
+    2. Decoder Block = Decoder in transformer also consists of multiple identical layers. Its primary function is to generate the output sequence based on the representations provided by the encoder and the previously generated tokens of the output.
+
+    Each decoder layer consists of three main components:
+
+    1.Masked Self-Attention Mechanism: Similar to the encoder's self-attention mechanism but its main purpose is to prevent model to see the attending future tokens to maintain the autoregressive property.
+    Basically, the decoder block operates in two modes inference or training mode.
+    In training mode , we use the teacher forcing principal in order to train our model.It simply means that even if the model genrate the wrong token we still sent the correct output token in the next iteration.Which cause a bias problem.So in order to solve that we use masked self-attention we were simply mask the future tokens from the context array.
+    In the inference mode, in this we use the autoregressive property = It simply means that in order to predict or generate the next token we need to depend on the previous genrated token.
+
+    2.Cross Attention Mechanism: This sub-layer allows the decoder to focus on relevant parts of the encoder's output and relevant part of the decoder input.It takes Q from encode and K,V form the decorder.
+
+    3. Feed-Forward Neural Network: This sub-layer processes the combined output of the masked self-attention and encoder-decoder attention mechanisms.
+
+    4. Layer Normalization and Residual Connections: Similar to the encoder Layer normalization and residual connections are applied.
+
 
 
