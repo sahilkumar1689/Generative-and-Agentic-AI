@@ -141,4 +141,155 @@ Generative AI
     4. Layer Normalization and Residual Connections: Similar to the encoder Layer normalization and residual connections are applied.
 
 
+Basic terminology:
+
+1. Token = It is nothing but a smallest unit of text a model can process.
+
+
+2. Context Window = The refer to the maximum range of text/tokens a llm can process at a time while generating or predicting the output.It simply determines how much previous information the model can “remember” to make predictions.If the input exceeds the context window, the earliest tokens are discarded, potentially losing earlier context.
+The context window helps the model understand relationships between tokens and words. For example, the context window allows the model to capture sentence structure, grammar, and even long-range dependencies (like subject-verb agreement).
+
+
+3. Temperature = It control how language models choose the next word during text generation. The model assigns probabilities to some possible words and after that select one of them using the top-p or top-k technique.
+It control how random the model output is typically ranges from 0 to 2.
+Less Temperature means more safer and predictable text.
+high means more creative.
+
+For example, we have a input 'The cat is sitting on the __'.
+Now using the Temperature parameters model assigns probabilistic to some of the possible words like mat has 35%,table has 20%,chair has 15%,roof has 10%,carpet has 5%.
+
+After assiging the probabilistic we use either the top-k or top-p techniques to select the next word.
+
+top-k = In this we select only the top k probabilities to predicting the next word and discard rest like if k = 3 then we select next word from top 3 probabilistic i.e. table,mat,chair.
+Now the next word can be any of these three.
+This helps control randomness by keeping the selection focused on higher-probability words.
+
+top-p = Top P selects the next word based on cumulative probability instead of a fixed number of options, allowing the set of possible choices to grow or shrink depending on how confident the model is.
+For example if the p = 0.9 the we select all those probabilistic whose cumulative sum is 0.9.And randomly select any one of them as our output.
+
+
+4. Hallucination = Hallucination in LLMs refers to instances where a large language model generates information that is false, fabricated or not supported by the input data or external knowledge. Even if the output appears fluent and confident, it may contain inaccuracies, made-up facts or unsupported claims which can reduce trust and reliability in AI systems.
+
+Causes of Hallucination:
+
+Limited context= Insufficient or ambiguous input can cause the model to fill gaps with fabricated information.
+
+Outdated knowledge= Closed-book models cannot access recent events or data, leading to inaccuracies.
+
+Over-reliance on learned patterns=  LLMs may predict text based on statistical likelihood rather than factual correctness.
+
+Complex reasoning tasks= Multi-step reasoning or unfamiliar domains increase the likelihood of hallucinations.
+
+
+Mitigation Strategies:
+
+Retrieval-Augmented Generation =  Provide external context from verified documents or databases to ground responses in factual information.
+Prompt Engineering = Craft prompts that explicitly instruct the model to indicate uncertainty or rely only on provided context.
+
+Fact-Checking Models or Tools = Use secondary models to validate or cross-check generated outputs for factual accuracy.
+
+PEFT / RLHF Fine-Tuning = Fine-tune models with human feedback or aligned data to discourage generating unsupported information.
+
+
+5. LLM Distillation = It is the process of compressing a large pre-trained language model (teacher) into a smaller model (student) while retaining most of its performance. The goal is to create a lighter, faster and more efficient model that can run on limited hardware without significant loss in accuracy or capabilities.
+There are various technique we used to transfer knowledge from teacher to student model whiel maintaing the performance and efficency:
+    1. knowledge Transformer = The student model learns from the teacher’s output probabilities (soft targets) along with ground truth labels. Soft targets provide richer information, helping the student capture complex patterns and improve accuracy.
+    2. Multi-Teacher Distillation =  Combines knowledge from multiple teacher models for better robustness.
+    3. Feature Based = Instead of just logit based sot target,the hidden representations from intermediate layers of the teacher model are transferred to the student.
+    4. Task-Specific Distillation = The student model is fine-tuned on specific downstream tasks (e.g., sentiment analysis, summarization) to optimize performance for real-world applications.
+
+
+6. Constitutional AI = It is a approach used to align the AI system with the human values, by guiding AI system using the predefined set of rules and principal.Unlike traditional methods that rely heavily on human feedback Constitutional AI uses written guidelines to help models make ethical, safe and consistent decisions during training
+Working:
+1. Supervised Fine Tuning = This process is similar to traditional supervised learning where the model learns by mimicking high quality examples.These examples are carefully chosen to reflect ethical and harmless responses.
+2. Self Critique and Revision = Once the model has been fine tuned it enters a stage where it generates multiple responses to the same prompt.After that instead of heavily relay on the human feedback modal reviews and critiques its own answers using a predefined set of constitutional principles.
+3. Reinforcement Learning with AI Feedback = This technique enables the model to continuously refine its behavior while reducing dependence on human reviewers.For example after second stage where modal compare their multiple response with the predefined set of rule.In this stage they rank the ones that best align with its ethical rules.
+
+
+7. AI Guardrails = AI guardrails also a safety mechanisms designed to keep AI systems on track.AI guardrails constantly monitors both the input and output of AI systems. They rely on predefined rules and algorithms such as finetuned models or pipelines to detect potentially problematic content or behavior. This real time monitoring allows for immediate intervention when necessary, ensuring that the AI system operates within acceptable boundaries.
+AI guardrails can be implemented through a combination of technique:
+
+1. Rule-Based Filters: Simple checks that block or flag specific words, phrases or patterns.
+2. Algorithmic Monitoring: Machine learning models that detect anomalies or risky behavior in real time.
+3. Policy Integration: Embedding organizational or regulatory guidelines into the AI’s operational logic.
+4. Human Oversight: Involving human reviewers for edge cases or high-risk scenarios.
+
+Note = Constitutional AI teaches the model how to behave internally during training or alignment, while AI Guardrails control the model's behavior externally before, during, or after inference.
+
+
+8. Multi Modality LLM = These models are designed to understand and generate information across multiple data types—such as text, images, audio or video—within a single unified architecture. Unlike traditional text-only LLMs, multimodal models can interpret and reason over different kinds of inputs together, enabling richer understanding and context-aware responses. 
+Key Components of Multimodal Large Language Models:
+
+1. Data Integration: MLLMs use algorithms to combine data from multiple sources, ensuring that the information from each modality is accurately represented and integrated.
+2. Feature Extraction: The model extracts relevant features from each type of input. For example, it might identify objects and their relationships in an image while understanding the context and meaning of accompanying text.
+3. Joint Representation: By creating a joint representation of the multimodal data, the model can make inferences and generate outputs that consider all available information.
+4. Cross-Modal Attention: Techniques like cross-modal attention help the model focus on relevant parts of the data from different modalities, improving its ability to generate coherent and contextually appropriate responses.
+
+Architecure:
+1. Modality Encoder: Specialized neural networks (like CNNs or Vision Transformers for images, audio models for sound and LLMs for text) process each input type, image, audio, video or text and convert them into high-dimensional feature embeddings.
+
+2. Connector (Aligner/Projector): This module transforms and synchronizes the varied modality embeddings, adapting them so they can be effectively interpreted and used by the central LLM. The connector may use techniques like MLPs, Q-Formers or learnable queries to project modality features into a compatible space.
+
+3. Fusion Mechanism: Information from all input types is integrated either at the feature level (early fusion), after preliminary processing (late fusion) or at multiple layers (hybrid fusion), enabling rich, context-aware cross-modal understanding.
+
+4. LLM Backbone: The large language model (such as GPT-4o or Gemini) serves as the reasoning core. It attends to and uses the fused multi-modal information to generate holistic, context-driven text outputs or to assist in further generative tasks like creating images, audio or video.
+
+
+9. Transfer Learning = Transfer learning is a technique where a model trained on one task is reused for a related task, especially when the new task has limited data.Only final layers are retrained, the rest of the model is frozen.
+
+Fine tuning = Fine-tuning is the process of taking a pre-trained model and further training it on a specific task or dataset to improve performance for that task.
+It is simply means using a pre-trained model and training it on a new dataset with frozen layers.
+he early layers are usually kept unchanged because they have already learned general features and fine tune the later layers.
+
+1. Parameter-Efficient Fine-Tuning = It refers to a set of techniques that allow adapting large pre-trained models to new tasks by training only a small subset of parameters instead of updating the entire model. The goal is to achieve high performance on downstream tasks while significantly reducing computational cost, memory usage and storage requirements.
+
+2. Low Rank adaption = It is a fine-tuning technique for large pre-trained models that adds small, trainable low-rank matrices to certain layers of the model instead of updating all model parameters. This allows adaptation to a new task while keeping the majority of the original model weights frozen, reducing computational cost and memory usage.
+
+3. Quantized Low Rank Adaption = It is an advanced fine-tuning technique that combines LoRA with quantization to further reduce memory and computational requirements when adapting large language models. It allows fine-tuning of extremely large models on modest hardware by using 8-bit or 4-bit quantized weights.
+
+4. Reinforcement Learning from Human Feedback = It is a technique used to fine-tune large language models by using human feedback to guide the model toward producing more useful, safe and aligned outputs. Instead of relying solely on supervised data, RLHF uses human judgments to shape the model’s behavior through reinforcement learning.
+
+
+10. LLM Injection = LLM Injection (Prompt Injection) is a security vulnerability where malicious users manipulate the input prompt to make a large language model (LLM) behave unexpectedly, reveal sensitive information or bypass restrictions. Essentially, it’s an attack that “injects” instructions into the prompt to override the intended behavior of the model.
+Techniques:
+1. Use AI guardrails to validate or filter the user input and llm output.
+2. Use Retrieval Safeguards in RAG to Ensure retrieved context from external sources is trusted and validated.
+3. Monitoring and Logging: Continuously monitor interactions for anomalies or unexpected outputs.
+
+
+11. LLM Evaluation = It is the process of assessing the performance, accuracy, reliability and safety of a large language model (LLM). It involves testing the model on specific tasks or datasets to measure how well it meets desired criteria such as factual correctness, coherence, reasoning ability and ethical alignment. Evaluation ensures that the model behaves as expected before deployment in real-world applications.
+Types of LLM Evaluation Techniques:
+
+1. Human Evaluation = Experts or crowdworkers manually assess the LLM’s outputs based on criteria such as accuracy, relevance, fluency, reasoning quality and safety.
+
+2. Automatic Metrics = Quantitative measures computed by comparing model outputs to reference outputs or using model-intrinsic scoring.
+
+Common Metrics:
+Accuracy / F1 Score: Classification correctness.
+BLEU: Measures similarity between generated text and reference text (commonly used in translation).
+ROUGE / METEOR: Evaluates text summarization and similarity to reference.
+Perplexity: Measures how well the model predicts the next token.
+Embedding-based similarity: Captures semantic similarity using vector embeddings.
+FID (Fréchet Inception Distance): Measures quality and realism of generated images in multimodal LLMs.
+Safety/Bias Metrics: Detects toxic, biased or harmful content.
+
+3. Benchmark Datasets: Standardized datasets designed to test LLM performance across various tasks.
+
+Examples:
+MMLU: Multitask language understanding.
+BIG-Bench: Diverse reasoning and multi-task evaluations.
+SQuAD / Natural Questions: Question answering.
+OpenAI HumanEval: Code generation tasks.
+TruthfulQA: Hallucination and factuality testing.
+
+
+12. Agentic AI = Agentic AI is just a llm but with some attached features like they have tool,memory,instructions.
+Agentic LLMs are large language models that act as autonomous agents, capable of planning, reasoning, taking multi-step actions and interacting with external tools or environments to accomplish goals. 
+Unlike simple chat-based LLMs that only respond to queries, agentic LLMs can make decisions, retrieve information, execute tasks and maintain context over time.
+
+
+13. RAG vs Fine tunning Use cases = Both are used for different scenarios like if we talk about the RAG it used in those situationn where the knowledge base is fixed although the context is dynamic but from where the context is comming is moreover fixed.For example, if we want to create a chat boat for a nutritionist company and their requirements is to use their documents,diet pans ,charts,analysis in order to generate a response while chat with any of their customer in those scenarios the RAG will be the best choice because the all over knowledge base is fixed.
+On the other hand Fine tunning is used for those scenarios where the requirements is to re-train a model and change their behaviour or in technical term we called change their weights in those scenarios we use fine tunning.
+Were we take a pre-trained model and further train them on some specific dataset so that their brehaviour or weights got shifted slightly according to our choice.For example, it really help full in health care system where Captured audio conversation between doctor and patient are feed to the fine tunned llm and generate a medical note, and the knowledge and tone of those medical notes are completely aligned with that doctor because we fine tunne model for that purpose.
+
 
