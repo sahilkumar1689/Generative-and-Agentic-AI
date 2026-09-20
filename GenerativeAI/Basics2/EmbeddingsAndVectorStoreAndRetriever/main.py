@@ -76,7 +76,7 @@ vector_store = Chroma(
 
 # vector_store.add_documents(documents=more_chunks, ids=more_ids)
 
-# delete() / delete_collection() = Used to delete the specific document on the basis of their meta_Data or ids.So set you meta_data and ids accordingly so that you can easily filter them.
+# delete() / delete_collection() = Used to delete the specific document on the basis of their meta_Data or ids.So set your meta_data and ids accordingly so that you can easily filter them.
 
 # vector_store.delete(ids=doc1_ids)
 
