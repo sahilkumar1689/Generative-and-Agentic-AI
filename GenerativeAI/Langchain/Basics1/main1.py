@@ -25,7 +25,7 @@ HUGGINGFACEHUB_API_TOKEN = os.getenv("HUGGINGFACEHUB_API_KEY")
 
 #  1. CHECKING AVAILABLE MODELS:
 
-# # Initialize the new genai Client
+# Initialize the new genai Client
 # client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
 # print("Available models:\n")
