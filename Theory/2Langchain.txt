@@ -1,0 +1,123 @@
+1. Langchain = LangChain is an open-source framework which is used for building applications on top of large language models. It gives you a standard interface for models, tools, and data sources, so switching from one provider to another doesn't mean rewriting your application.
+It provides reusable components like prompt templates, memory, chains, agents, tools, retrievers, and vector database connections, which make it easy to create AI applications like chatbots, document Q&A systems, AI assistants, and RAG apps.
+
+
+2. Problem langchain solved = It generally solved three problems:
+
+1. Provider lock-in = Every LLM API has its own message format and its own way of handling structured output. LangChain normalizes those differences so your application code doesn't care which model is behind it.
+
+2. State = LLM APIs are stateless. Every request starts from nothing. Real applications need conversation history and results from earlier steps, and LangChain handles that through LangGraph persistence.
+
+3. Orchestration = Multi-step workflows involve branching, retries, tool calls, and human approvals. Writing that control flow by hand is not something you want to do.
+
+
+3. Uses case = chat bots,agents,RAG systems,data extraction pipelines.
+
+
+4. Chains = A chain is a sequence of steps where the output of one step becomes the input of the next.Use chains when the path through your application is fixed. If you know every step in advance and the order never changes, a chain is the right tool. It's predictable and easy to test.
+In langchain newer version in order to implement the chains we uses the LCEL pipelines.
+
+LCEL = Stands for LangChain Expression Language and it is represented using the "|" pipe operator.This pipe opeartor connect the runnables with each other.
+
+Runnables = Runnable is the interface every LangChain component implements.Means every component in langchain either models,prompt,tools,structure output,etc all are runnables because all these follow standard contract methods:
+1. invoke() = Run once with a single input.
+
+2. batch() = Run over a list of inputs in parallel.
+
+3. stream() = Yield output in chunks as it's produced.
+
+4. astream() = The async version of streaming.Streams the final output of a Runnable token by token.
+
+5. astream_events() = Streams every intermediate event like each model start, each token, each tool call.
+
+Because they follow the same contract so we can connect them in a chain using the LCEL pipeline.
+
+
+5. Types of runnables = There are various type of runnables present but the most commonly used are:
+1. Runnableparallel() = It runs several Runnables on the same input at once and returns a dict of their results.
+
+2. Runnablelambda() = It is used to accept the input and extract the information from the input in order to send the response to the next runnable in a specific format.
+
+3. Runnablepassthrough() = It simply accept the input and forwards the input unchanged.
+
+
+6. Tools = Tools allow LangChain to interact with external systems. They enable LLMs to perform tasks beyond text generation.Technically if we say, a tool is just a function the model can call, wrapped with a description the model can read.
+The @tool decorator turns a plain function into a LangChain tool. The function name becomes the tool name, the docstring becomes the description the model reads to decide when to call it, and the type hints become the argument schema.
+
+Tool Calling = When a model decides they need to call a external function in order to achieve the final goal, its called tool calling.
+
+LangChain converts your tool definitions into the schema format the provider expects and sends them with the prompt. The model reads the tool names, descriptions, and parameter types, then returns a structured request naming one tool and its arguments. LangChain executes it and feeds the result back.
+
+
+7. PromptTemplate versus ChatPromptTemplate = PromptTemplate produces a single string, which suits older completion-style models. ChatPromptTemplate produces a list of role-tagged messages (system, human, ai), which is what every modern chat model expects.
+
+
+8. Output parser = An Output Parser converts the raw answer from an LLM into a structured representation such as JSON, Python objects, or Pydantic models. This makes the output easier to evaluate and incorporate into applications, particularly when downstream systems require structured data.
+
+PydanticOutputParser versus StructuredOutputParser = Both are help us to validate the output whether it is in proper expected format or not.But StructuredOutputParser returns a dict and does no real type validation.PydanticOutputParser gives you full Pydantic validation, nested models, and type coercion.
+
+
+9. Middlewares = Middleware is a very useful and powerful concept that provides a way to more tightly control what happens inside the agent.
+It help us with:
+1. logging the agent behaviour.
+2. Transforming prompts, tool selection, and output formatting.
+3. Adding retries, fallbacks, and early termination logic.
+4. Applying rate limits, guardrails, and PII detection.
+
+Basically we all know that a typically agent loop looks like, 
+The request enters in the core agent they decides what tool to call and repeating it until desirable result and generate the final result.
+But Middlewares exposes hooks before and after each of those steps, like we have before/after agent hook and before/after model, wrap_tool_call hook.
+
+1. Built in Middleware = Human in the loop,summarization Middleware,Filesystem Middleware,PII Middleware,Subagents,etc.
+2. Custom Middleware = We also create the custom Middleware by wrapping the function inside the middleware hook decorator like @before_agent, @after_agent,etc.
+
+
+10. Memory = We all knwo that LLM APIs are stateless. Every request is independent they have no knowledge of what came before, so anything the model should remember has to be sent again in the prompt.
+
+Memory is the layer that decides what gets sent. It stores the chat conversation, preferences , states,etc. between and cross thread as well.
+
+Langchain provided two type of memory:
+1. Short Term memory = Short term memory used to store the data with in the single conversation/thread using the thread_id.That is what lets a single conversation remember its own earlier turns and lets you pause and resume.
+In langchain we can use the short term memory using the checkpoints which is a LangGraph concept.
+
+2. Long thream memory = By using the long term memory the data persists across different threads and conversations by using a namespace, not a thread_id.This memory is generally used to store the user preferences and important information about them that persists between the different chats.
+In langchain we can use long term memory usign the virtual banckend concept which included the statebackend,filebackend,storebackend via a incorporate with a Middlewares. 
+
+
+11. Context Engineering = Context engineering is providing the right information and tools in the right format so the LLM can accomplish a task.
+
+Basically when the llm fails,it fail for one of two reasons:
+1. The underlying LLM is not capable enough.
+2. The “right” context was not passed to the LLM.
+
+
+12. Context Engineering in langchain = There are three steps in langchain to maintain the context:
+
+1. Model Context = It includes the transient context, means what goes into model calls.
+
+systems prompt = It is a inital prompt that sets the LLM’s behavior and capabilities.It gave them a role and list and specify what capabilities and tool access they have and instructions also.
+
+Messages = It is nothing but a short term memory.Means we send the past conversation history with the llm.
+
+Tools description = We need to set the tool descriptions properly because it guide the model’s reasoning about when and how to use the tool.
+
+Model selection = selecting the right model for right task.
+
+Response format = It guide the llm generate response in what format.
+
+
+2. Tool context = It simply includes how the tool can access the runtime context like user id and update in the persistencat store.
+
+
+3. Life cycle context = It simply includes the how middleware intercepting data flow to implement cross-cutting concerns like summarization, guardrails, and logging.How they access the runtime context and persistencat store.
+
+
+Note = 1. Make clear boxes in your head. 
+
+short term and long term memory = How your data persists.
+
+Context engineering = How you llm access that memory.short term includes in the model context and long term memory includes in the tool and life cycle context.
+
+
+2. Other options = Vercel’s AI SDK, CrewAI, OpenAI Agents SDK, Google ADK, LlamaIndex,etc.
+

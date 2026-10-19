@@ -1,0 +1,67 @@
+Deepagents = Deep Agents is an open source agent harness.It is a standalone library built on top of LangChain’s core building blocks for agents. It uses the LangGraph runtime for durable execution, streaming, human-in-the-loop, and other features.
+
+In simple terms deepagent is a harness that has all the langchain framework capabilities built in like the virtual file system,sandboxing,skills,memory,sub agents, auto summarization,human in the loop,etc everything build in so we directly configure them according to our use case and use them directly,instead of writing these functionalities from scratch like we did in the langchain framework.
+
+Components:
+
+1. virtual file system = Every deep agent has a virtual filesystem and their file tool used that virtual filesystem to read and write files. But the backend decides where the data is stored and how long it is available. There are three types of backends available in deepagents:
+
+1. StateBackend: This backend store data in langgraph in-memory state and data available within single thread only.
+The data is present inside the agent in-memory 'files' dictinonary and we must need to carried forward that state to keep using them.
+Also if we don't specify any backend then by default StateBackend will be used.
+It is suitable for scenarios where we need to work with the temporary working files which are available only for the current session and not needed to be persisted across sessions.
+
+2. FilesystemBackend: This backend store data in local filesystem and data available across multiple threads and sessions. It is suitable for scenarios where we need to work with the files which are needed to be persisted across sessions and can be shared across multiple threads.
+
+3. StoreBackend = This backend store data in langgraph store and data available across mutiple threads and sessions. It is suitable for scenarios where we need to work with the files which are needed to be persisted across sessions and can be shared across multiple threads.
+
+
+
+2. Permissions = You can add the read , write permission with the filesystem backend.
+# permissions = [
+#     FilesystemPermission(
+#         operations=["write"], # it can be "read", "write" or "read,write". write permission includes the create,update and delete operations. read permission includes the read operation.
+#         path=["."],
+#         mode="interrupt"  # it can be "interrupt" , "allow" or "deny". If it is "interrupt" then the agent will ask for human approval before performing the operation. If it is "allow" then the agent will perform the operation without asking for human approval. If it is "deny" then the agent will not perform the operation and will return an error message.
+#     )
+# ]
+
+# Note = 1. You can define the multiple permissions but keep that in mind langgraph follow the first match wins policy.so ordering of the permissions is important.
+# 2. Because write permisson includes the create,update and delete operations as well.So if you want to apply the interrupts on custom opeartion.
+
+
+3. Skills = Skills are nothing but the Specialized and detailed instructions for a specific task.Like we create a python , java,sql,aws,redis,etc skills in which we write the instructions , rules,step by step workflows,etc. in order to guide the llm.
+We create a skill folder and add specific skills in it in a skill.md file and we pass that skills parent folder path in the agent "skills=" parameter.
+After that agent automatically load the skills on-demand, the agent reads only skill descriptions at startup, then reads the full skill file only when it matches a task. This keeps context lean until a capability is needed.
+
+
+4. Memory = In memory parameter we generally pass the agent.md file path in which we write all the project related instruction, rules to follow, design specification, etc. And agent can load that agent.md file with every call.They can also read and write the agent file but depending upon our use case.We gave them permission to read only or write as well.
+We can also caches the agent.md file if its remain most of the time static and ready only.
+If we are usign the anthropic and amazon bedrock model it provides the auto caching.
+
+
+5. Context Engineering in deep agents = There are five steps to maintain the context in deepagents:
+
+1. Input context = Input context is information provided to your deep agent at startup that becomes part of its system prompt.It includes the system prompts, short term memory, tool description, skills, memory.
+
+2. Runtime context = Runtime context is per-run configuration you pass when you invoke the agent. It is not automatically included in the model prompt; the model only sees it if a tool, middleware, or other logic reads it and adds it to messages or the system prompt.And it is read only.You can't modify it.It generally inlcudes the user info,app info,etc.
+
+
+3. Custom state context = Use a custom state schema when your agent or middleware needs to track data that must persist across the full agent lifecycle and survive checkpointing.
+
+4. Context compression and isolation = Every create_deep_agent call includes built-in context compression. You do not need to add middleware for offloading or summarization to work.
+Offloading = Large tool inputs and results are stored in the filesystem and replaced with references.
+Summarization = Old messages are compressed into an LLM-generated summary when limits are approached.
+
+Isolation = Subagents solve the context bloat problem. When the main agent uses tools with large outputs (web search, file reads, database queries), the context window fills quickly. Subagents isolate this work—the main agent receives only the final result, not the dozens of tool calls that produced it. You can also configure each subagent separately from the main agent
+
+5. Long term memory = Long-term memory enables your deep agent to persist information across different threads and conversations. Deep agents can use long-term memory for storing user preferences, accumulated knowledge, research progress, or any information that should persist beyond a single session.
+Deep agent provided the built in backend for handling the long term memory easily.
+
+
+Use cases:
+
+Langchain = You’re building straightforward agent applications without complex orchestration needs.
+Langgraph = You need fine-grained, low-level control over agent orchestration.
+Deep Agents = You want to use predefined tools, such as filesystem operations, bash execution, and automated context engineering.
+

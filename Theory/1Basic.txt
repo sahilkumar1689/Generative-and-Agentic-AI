@@ -3,6 +3,10 @@ Basically in Generative AI, the models trained on large amount of dataset includ
 Durig training process the model learns millions or billions of parameters that helps them predicting or generating new content that sometimes feels like human generated content.
 one liner = AI systems that can generate new content.
 
+
+LLM = An LLM (Large Language Model) is an advanced AI system built on transformer neural networks and trained on massive text datasets—often billions or trillions of words—to understand and generate human‑like language. It predicts the next token in a sequence and can perform tasks such as answering questions, writing text, translating languages, and coding.
+
+
 Note = 1. generative AI is not a model, it is one of the category like ai , ml ,deep learning etc.
 2. A mental model to categorize all the AI branches:
 
@@ -286,6 +290,10 @@ TruthfulQA: Hallucination and factuality testing.
 12. Agentic AI = Agentic AI is just a llm but with some attached features like they have tool,memory,instructions.
 Agentic LLMs are large language models that act as autonomous agents, capable of planning, reasoning, taking multi-step actions and interacting with external tools or environments to accomplish goals. 
 Unlike simple chat-based LLMs that only respond to queries, agentic LLMs can make decisions, retrieve information, execute tasks and maintain context over time.
+
+Agent = Agent is an autonomous software system that perceives its environment, reasons about what to do, and takes actions to achieve specific goals. It uses AI techniques, large language models, planning, and tool use—to complete tasks on behalf of users.
+In simply terms, agent = llm + harness
+where An agent is a system where the model decides the control flow. You give it a goal and a set of tools, and it chooses which tool to call, reads the result, and decides whether to continue.
 
 
 13. RAG vs Fine tunning Use cases = Both are used for different scenarios like if we talk about the RAG it used in those situationn where the knowledge base is fixed although the context is dynamic but from where the context is comming is moreover fixed.For example, if we want to create a chat boat for a nutritionist company and their requirements is to use their documents,diet pans ,charts,analysis in order to generate a response while chat with any of their customer in those scenarios the RAG will be the best choice because the all over knowledge base is fixed.
